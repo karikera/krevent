@@ -1,7 +1,7 @@
 
 import '@mcbe/dummy-console';
 
-export interface CapsuledEvent<T extends (...args:any[])=>(boolean|void)>
+export interface CapsuledEvent<T extends (...args:any[])=>any>
 {
     isEmpty():boolean;
     on(listener:T):void;
@@ -10,7 +10,7 @@ export interface CapsuledEvent<T extends (...args:any[])=>(boolean|void)>
     remove(listener:T):boolean;
 }
 
-export default class Event<T extends (...args:any[])=>(boolean|void)> implements CapsuledEvent<T>
+export default class Event<T extends (...args:any[])=>any> implements CapsuledEvent<T>
 {
     private readonly listeners:T[] = [];
 
@@ -19,6 +19,9 @@ export default class Event<T extends (...args:any[])=>(boolean|void)> implements
         return this.listeners.length === 0;
     }
 
+    /**
+     * cancel event if it returns non-undefined value
+     */
     on(listener:T):void
     {
         this.listeners.push(listener);
@@ -46,24 +49,33 @@ export default class Event<T extends (...args:any[])=>(boolean|void)> implements
         return true;
     }
 
-    fire(...v:T extends (...args:infer ARGS)=>any ? ARGS : never):boolean
+    /**
+     * return value if it canceled
+     */
+    fire(...v:T extends (...args:infer ARGS)=>any ? ARGS : never):(T extends (...args:any[])=>infer RET ? RET : never)|undefined
     {
         for (const listener of this.listeners)
         {
             try
             {
-                if (listener(...v)) return true;
+                const ret = listener(...v);
+                if (ret !== undefined) return ret;
             }
             catch (err)
             {
                 console.error(err);
             }
         }
-        return false;
+        return undefined;
+    }
+    
+    allListeners():IterableIterator<T>
+    {
+        return this.listeners.values();
     }
 }
 
-export class EventEx<T extends (...args:any[])=>(boolean|void)> extends Event<T>
+export class EventEx<T extends (...args:any[])=>any> extends Event<T>
 {
     protected onStarted():void{}
     protected onCleared():void{}

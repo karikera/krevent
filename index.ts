@@ -10,7 +10,7 @@ export interface CapsuledEvent<T extends (...args:any[])=>any>
     remove(listener:T):boolean;
 }
 
-export default class Event<T extends (...args:any[])=>any> implements CapsuledEvent<T>
+export class Event<T extends (...args:any[])=>any> implements CapsuledEvent<T>
 {
     private readonly listeners:T[] = [];
 
@@ -23,6 +23,16 @@ export default class Event<T extends (...args:any[])=>any> implements CapsuledEv
      * cancel event if it returns non-undefined value
      */
     on(listener:T):void
+    {
+        this.listeners.push(listener);
+    }
+
+    onFirst(listener:T):void
+    {
+        this.listeners.unshift(listener);
+    }
+
+    onLast(listener:T):void
     {
         this.listeners.push(listener);
     }
@@ -92,3 +102,5 @@ export class EventEx<T extends (...args:any[])=>any> extends Event<T>
         return true;
     }
 };
+
+export default Event;

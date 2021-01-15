@@ -1,6 +1,6 @@
 {
   "name": "krevent",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,11 +9,11 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "@mcbe/dummy-console": "^1.0.3"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/karikera/krevent"
+  },
+  "dependencies": {
+    "@mcbe/dummy-console": "^2.0.4"
   }
 }

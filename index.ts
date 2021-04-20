@@ -118,6 +118,13 @@ export class Event<T extends (...args:any[])=>any> implements CapsuledEvent<T>
     {
         return this.listeners.values();
     }
+
+    /**
+     * remove all listeners
+     */
+    clear():void {
+        this.listeners.length = 0;
+    }
 }
 
 export class EventEx<T extends (...args:any[])=>any> extends Event<T>
